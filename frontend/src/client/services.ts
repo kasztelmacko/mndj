@@ -33,6 +33,7 @@ import type {
   UserItemPublic,
   UserItemsPublic,
   UserItemUpdate,
+  UserTeamsPublic,
 } from "./models"
 
 export type TDataLoginAccessToken = {
@@ -672,6 +673,14 @@ export class TeamsService {
     })
   }
 }
+export type TDataViewTeamUsers = {
+  team_id: string;
+}
+
+export type TDataViewTeamUser = {
+  user_id: string;
+  team_id: string;
+}
 
 export type TDataCreateUserTeam = {
   team_id: string;
@@ -696,6 +705,40 @@ export class UserTeamsService {
    * @returns UserWithPermissions Successful Response
    * @throws ApiError
    */
+  public static viewTeamUsers(
+    data: TDataViewTeamUsers,
+  ): CancelablePromise<UserTeamsPublic> {
+    const { team_id } = data
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/teams/{team_id}/users",
+      path: {
+        team_id,
+      },
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+
+  public static viewTeamUser(
+    data: TDataViewTeamUser,
+  ): CancelablePromise<UserWithPermissions> {
+    const { team_id, user_id } = data
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/teams/{team_id}/users/{user_id}",
+      path: {
+        team_id,
+        user_id,
+      },
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+
+
   public static createUserTeam(
     data: TDataCreateUserTeam,
   ): CancelablePromise<UserWithPermissions> {

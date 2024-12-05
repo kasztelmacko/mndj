@@ -683,6 +683,22 @@ export const $UserWithPermissions = {
   },
 } as const
 
+export const $UserTeamsPublic = {
+  properties: {
+    data: {
+      type: "array",
+      contains: {
+        type: "UserWithPermissions",
+      },
+      isRequired: true,
+    },
+    count: {
+      type: "number",
+      isRequired: true,
+    },
+  },
+} as const;
+
 export const $LabCreate = {
   properties: {
     lab_place: {

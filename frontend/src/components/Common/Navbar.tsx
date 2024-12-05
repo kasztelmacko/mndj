@@ -4,11 +4,12 @@ import { Button, Flex, Icon, useDisclosure } from "@chakra-ui/react"
 import { FaPlus } from "react-icons/fa"
 
 interface NavbarProps {
-  type: string
-  addModalAs: ComponentType | ElementType
+  type: string;
+  addModalAs: ComponentType<{ isOpen: boolean; onClose: () => void; team_id?: string }> | ElementType;
+  team_id?: string;
 }
 
-const Navbar = ({ type, addModalAs }: NavbarProps) => {
+const Navbar = ({ type, addModalAs, team_id }: NavbarProps) => {
   const addModal = useDisclosure()
 
   const AddModal = addModalAs
@@ -30,7 +31,7 @@ const Navbar = ({ type, addModalAs }: NavbarProps) => {
         >
           <Icon as={FaPlus} /> Add {type}
         </Button>
-        <AddModal isOpen={addModal.isOpen} onClose={addModal.onClose} />
+        <AddModal isOpen={addModal.isOpen} onClose={addModal.onClose} team_id={team_id}/>
       </Flex>
     </>
   )

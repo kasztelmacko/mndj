@@ -10,10 +10,11 @@ import {
   SimpleGrid,
   Center,
   Icon,
+  Button,
 } from "@chakra-ui/react"
 import { FiMail, FiUser } from "react-icons/fi"
 import { useQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
 import { z } from "zod"
 
 import { TeamsService, UsersService, TeamPublic } from "../../client"
@@ -113,7 +114,7 @@ function TeamCard({ team }: { team: TeamPublic }) {
       </CardBody>
       <CardFooter>
         <Center>
-          {/* <SimpleGrid columns={2} spacing="4">
+          <SimpleGrid columns={2} spacing="4">
             <Button
               width="100%"
               variant="primary"
@@ -135,7 +136,7 @@ function TeamCard({ team }: { team: TeamPublic }) {
                 Users
               </Button>
             </Link>
-          </SimpleGrid> */}
+          </SimpleGrid>
         </Center>
       </CardFooter>
     </Card>

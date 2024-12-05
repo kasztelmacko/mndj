@@ -165,6 +165,11 @@ export type UserWithPermissions = {
   can_edit_users?: boolean
 }
 
+export type UserTeamsPublic = {
+  data: Array<UserWithPermissions>
+  count: number
+}
+
 export type LabCreate = {
   lab_place?: string | null
   lab_university?: string | null

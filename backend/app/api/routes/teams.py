@@ -193,6 +193,59 @@ def add_user_to_team(
 
     return Message(message="User added to team successfully.")
 
+@router.get("/{team_id}/users/{user_id}", response_model=UserWithPermissions)
+def view_user_in_team(
+    *, session: SessionDep, current_user: CurrentUser, team_id: uuid.UUID, user_id: uuid.UUID
+) -> Any:
+    """
+    View a specific user in a team.
+    """
+    # Check if the current user is part of the team
+    team = session.get(Team, team_id)
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+
+    # Check if the current user is part of the lab
+    current_user_team = session.exec(
+        select(UserTeam).where(
+            UserTeam.team_id == team_id,
+            UserTeam.user_id == current_user.user_id
+        )
+    ).first()
+
+    if not current_user_team:
+        raise HTTPException(status_code=403, detail="You are not part of this team")
+
+    # Find the user by their user ID
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with ID {user_id} not found")
+
+    # Check if the user is part of the team
+    user_team = session.exec(
+        select(UserTeam).where(
+            UserTeam.team_id == team_id,
+            UserTeam.user_id == user.user_id
+        )
+    ).first()
+
+    if not user_team:
+        raise HTTPException(status_code=404, detail=f"User with ID {user.user_id} is not associated with this team")
+
+    # Construct the UserWithPermissions object
+    user_with_permissions = UserWithPermissions(
+        email=user.email,
+        is_active=user.is_active,
+        is_superuser=user.is_superuser,
+        full_name=user.full_name,
+        user_id=user.user_id,
+        can_edit_labs=user_team.can_edit_labs,
+        can_edit_items=user_team.can_edit_items,
+        can_edit_users=user_team.can_edit_users
+    )
+
+    return user_with_permissions
+
 @router.delete("/{team_id}/users/{user_id}/remove-user", response_model=Message)
 def remove_user_from_team(
     *, session: SessionDep, team_id: int, user_id: int, current_user: CurrentUser
